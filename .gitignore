@@ -1,0 +1,6 @@
+server/.env
+server/agentik.db
+server/uploads
+server/node_modules
+server/agentik.db-shm
+server/agentik.db-wal

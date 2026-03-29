@@ -1,0 +1,10 @@
+{
+    "server_url": "http://localhost:3000",
+    "agent_uid": "nurse-pc-001",
+    "platform": "linux",
+    "hostname": "nurse-workstation",
+    "version": "1.0.0",
+    "watch_dir": "/home/sviat/cardio_data",
+    "poll_interval": 10,
+    "log_file": "agent.log"
+}

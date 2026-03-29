@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Вход | Медицинская система</title>
+    <link rel="stylesheet" href="entrance_style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="login-wrapper">
+            <div class="login-header">
+                <h1><i class="fas fa-hospital-user"></i> Медицинская система</h1>
+                <p>Войдите в свой аккаунт</p>
+            </div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label><i class="fas fa-user-circle"></i> Логин</label>
+                    <input type="text" id="login" placeholder="Введите ваш логин" required autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-lock"></i> Пароль</label>
+                    <input type="password" id="password" placeholder="Введите пароль" required autocomplete="current-password">
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-id-card"></i> Полис ОМС</label>
+                    <input type="text" id="polis" placeholder="ХХХХ-ХХХХ-ХХХХ-ХХХХ" required>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="remember">
+                    <label for="remember">Запомнить меня</label>
+                </div>
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i> Войти
+                </button>
+                <div class="register-link">
+                    Нет аккаунта? <a href="registration_page.html">Зарегистрироваться</a>
+                </div>
+            </form>
+
+            <div class="demo-info">
+                <p><i class="fas fa-info-circle"></i> Тестовые данные для входа:</p>
+                <div class="demo-creds">
+                    <span>Логин: ivanov_i</span>
+                    <span>Пароль: 123456</span>
+                    <span>Полис: 1234-5678-9012-3456</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const loginInput = document.getElementById('login');
+        const passwordInput = document.getElementById('password');
+        const polisInput = document.getElementById('polis');
+        const rememberCheckbox = document.getElementById('remember');
+
+        window.onload = function() {
+            const savedLogin = localStorage.getItem('rememberedLogin');
+            const savedPolis = localStorage.getItem('rememberedPolis');
+            if (savedLogin && savedPolis) {
+                loginInput.value = savedLogin;
+                polisInput.value = savedPolis;
+                rememberCheckbox.checked = true;
+                passwordInput.focus();
+            }
+        };
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const login = loginInput.value.trim();
+            const password = passwordInput.value;
+            const polis = polisInput.value.trim();
+
+            if (!login || !password || !polis) {
+                alert('Пожалуйста, заполните все поля!');
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ login, password, polis })
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    alert(data.error || 'Ошибка входа');
+                    return;
+                }
+
+                if (rememberCheckbox.checked) {
+                    localStorage.setItem('rememberedLogin', login);
+                    localStorage.setItem('rememberedPolis', polis);
+                    localStorage.setItem('access_token', data.access_token);
+                } else {
+                    localStorage.removeItem('rememberedLogin');
+                    localStorage.removeItem('rememberedPolis');
+                    sessionStorage.setItem('access_token', data.access_token);
+                }
+
+                localStorage.setItem('currentUser', JSON.stringify(data.user));
+                alert(`Добро пожаловать, ${data.user.fullname}!`);
+                window.location.href = 'main_menu_page.html';
+
+            } catch (err) {
+                alert('Ошибка подключения к серверу');
+                console.error(err);
+            }
+        });
+    </script>
+</body>
+</html>

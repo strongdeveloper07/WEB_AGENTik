@@ -1,0 +1,3 @@
+/home/sviat/projects/web_agent/WEB_AGENTik/agent/build/CMakeFiles/cardio_agent.dir
+/home/sviat/projects/web_agent/WEB_AGENTik/agent/build/CMakeFiles/edit_cache.dir
+/home/sviat/projects/web_agent/WEB_AGENTik/agent/build/CMakeFiles/rebuild_cache.dir

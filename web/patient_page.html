@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Досье пациента | Медицинская система</title>
+    <link rel="stylesheet" href="patient_page_style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="dossier-wrapper">
+            <div class="dossier-header">
+                <div class="header-left">
+                    <a href="main_menu_page.html" class="btn-back">
+                        <i class="fas fa-arrow-left"></i> Назад к списку
+                    </a>
+                    <h1><i class="fas fa-folder-open"></i> Досье пациента</h1>
+                </div>
+                <div class="header-right">
+                    <div class="doctor-info">
+                        <i class="fas fa-user-md"></i>
+                        <span>Загрузка...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dossier-content">
+                <div class="dossier-left">
+                    <div class="photo-section">
+                        <div class="patient-photo" id="patientPhoto">
+                            <img id="patientImage" src="https://via.placeholder.com/200x200?text=Нет+фото" alt="Фото пациента">
+                            <div class="photo-overlay">
+                                <label for="photoUpload" class="upload-photo-btn">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Загрузить фото</span>
+                                </label>
+                                <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+                        <div class="patient-status">
+                            <span class="status-badge active">
+                                <i class="fas fa-circle"></i> Активен
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3><i class="fas fa-chart-line"></i> Статистика</h3>
+                        <div class="stat-item">
+                            <span class="stat-label">Дата регистрации:</span>
+                            <span class="stat-value" id="regDate">—</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Последний визит:</span>
+                            <span class="stat-value" id="lastVisit">—</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Всего визитов:</span>
+                            <span class="stat-value" id="totalVisits">0</span>
+                        </div>
+                        <button class="btn-visit" onclick="addVisit()" style="margin-top:15px;width:100%;padding:10px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;">
+                            <i class="fas fa-calendar-plus"></i> Зафиксировать визит
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dossier-right">
+                    <form id="patientForm">
+                        <div class="form-section">
+                            <h3><i class="fas fa-user-circle"></i> Личные данные</h3>
+                            <div class="input-group">
+                                <label><i class="fas fa-user"></i> Полное имя *</label>
+                                <input type="text" id="fullname" required>
+                            </div>
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label><i class="fas fa-phone"></i> Телефон *</label>
+                                    <input type="tel" id="phone" required>
+                                </div>
+                                <div class="input-group">
+                                    <label><i class="fas fa-id-card"></i> Полис *</label>
+                                    <input type="text" id="polis" placeholder="ХХХХ-ХХХХ-ХХХХ-ХХХХ" required>
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label><i class="fas fa-hospital"></i> Адрес поликлиники *</label>
+                                <input type="text" id="clinic" required>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h3><i class="fas fa-notes-medical"></i> Медицинская информация</h3>
+                            <div class="input-group">
+                                <label><i class="fas fa-tint"></i> Группа крови</label>
+                                <select id="bloodType">
+                                    <option value="">Не указано</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label><i class="fas fa-allergies"></i> Аллергии</label>
+                                <textarea id="allergies" rows="3" placeholder="Укажите известные аллергии (если есть)"></textarea>
+                            </div>
+                            <div class="input-group">
+                                <label><i class="fas fa-pills"></i> Хронические заболевания</label>
+                                <textarea id="chronicDiseases" rows="3" placeholder="Укажите хронические заболевания"></textarea>
+                            </div>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="button" class="btn-cancel" onclick="cancelEdit()">Отмена</button>
+                            <button type="submit" class="btn-save">
+                                <i class="fas fa-save"></i> Сохранить изменения
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let patientId = null;
+        let patientData = null;
+
+        function getToken() {
+            return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+        }
+
+        window.onload = async function() {
+            if (!getToken()) {
+                window.location.href = 'entrance_page.html';
+                return;
+            }
+
+            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
+            if (user.fullname) {
+                document.querySelector('.doctor-info span').textContent = user.fullname;
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            patientId = parseInt(urlParams.get('id'));
+
+            if (!patientId) {
+                alert('Ошибка: пациент не найден');
+                window.location.href = 'main_menu_page.html';
+                return;
+            }
+
+            await loadPatientData();
+        };
+
+        async function loadPatientData() {
+            try {
+                const res = await fetch(`/api/v1/patients/${patientId}`, {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+
+                if (res.status === 401 || res.status === 403) {
+                    window.location.href = 'entrance_page.html';
+                    return;
+                }
+
+                if (res.status === 404) {
+                    alert('Пациент не найден');
+                    window.location.href = 'main_menu_page.html';
+                    return;
+                }
+
+                patientData = await res.json();
+
+                document.getElementById('fullname').value = patientData.fullname || '';
+                document.getElementById('phone').value = patientData.phone || '';
+                document.getElementById('polis').value = patientData.polis || '';
+                document.getElementById('clinic').value = patientData.clinic || '';
+                document.getElementById('bloodType').value = patientData.blood_type || '';
+                document.getElementById('allergies').value = patientData.allergies || '';
+                document.getElementById('chronicDiseases').value = patientData.chronic_diseases || '';
+
+                document.getElementById('regDate').textContent = patientData.created_at
+                    ? new Date(patientData.created_at).toLocaleDateString('ru-RU') : '—';
+                document.getElementById('lastVisit').textContent = patientData.last_visit || '—';
+                document.getElementById('totalVisits').textContent = patientData.total_visits || 0;
+
+                if (patientData.photo) {
+                    document.getElementById('patientImage').src = patientData.photo;
+                }
+
+            } catch (err) {
+                console.error('Ошибка загрузки пациента:', err);
+                alert('Ошибка подключения к серверу');
+            }
+        }
+
+        document.getElementById('patientForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const updatedData = {
+                fullname: document.getElementById('fullname').value,
+                phone: document.getElementById('phone').value,
+                polis: document.getElementById('polis').value,
+                clinic: document.getElementById('clinic').value,
+                blood_type: document.getElementById('bloodType').value,
+                allergies: document.getElementById('allergies').value,
+                chronic_diseases: document.getElementById('chronicDiseases').value,
+                photo: patientData.photo || null
+            };
+
+            try {
+                const res = await fetch(`/api/v1/patients/${patientId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getToken()}`
+                    },
+                    body: JSON.stringify(updatedData)
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    alert(data.error || 'Ошибка сохранения');
+                    return;
+                }
+
+                patientData = data.patient;
+                alert('Данные успешно сохранены!');
+
+            } catch (err) {
+                console.error(err);
+                alert('Ошибка подключения к серверу');
+            }
+        });
+
+        function cancelEdit() {
+            if (confirm('Отменить изменения? Несохраненные данные будут потеряны.')) {
+                window.location.href = 'main_menu_page.html';
+            }
+        }
+
+        document.getElementById('photoUpload').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file || !file.type.startsWith('image/')) {
+                alert('Пожалуйста, выберите файл изображения');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                const photoData = event.target.result;
+                document.getElementById('patientImage').src = photoData;
+
+                try {
+                    const res = await fetch(`/api/v1/patients/${patientId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${getToken()}`
+                        },
+                        body: JSON.stringify({ ...patientData, photo: photoData })
+                    });
+
+                    if (res.ok) {
+                        patientData = (await res.json()).patient;
+                        alert('Фото успешно загружено!');
+                    }
+                } catch (err) {
+                    console.error(err);
+                }
+            };
+            reader.readAsDataURL(file);
+        });
+
+        async function addVisit() {
+            try {
+                const res = await fetch(`/api/v1/patients/${patientId}/visit`, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    alert(data.error || 'Ошибка');
+                    return;
+                }
+
+                const visits = parseInt(document.getElementById('totalVisits').textContent || '0') + 1;
+                document.getElementById('lastVisit').textContent = data.last_visit;
+                document.getElementById('totalVisits').textContent = visits;
+                alert('Визит добавлен!');
+
+            } catch (err) {
+                console.error(err);
+                alert('Ошибка подключения к серверу');
+            }
+        }
+    </script>
+</body>
+</html>

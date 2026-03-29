@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Регистрация | Создать аккаунт</title>
+    <link rel="stylesheet" href="registration_page_style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="form-wrapper">
+            <div class="form-header">
+                <h2>Создать аккаунт</h2>
+                <p>Пожалуйста, заполните форму регистрации</p>
+            </div>
+
+            <form action="#" method="post" id="registerForm">
+                <div class="form-columns">
+                    <div class="form-column">
+                        <div class="input-group">
+                            <label for="fullname"><i class="fas fa-user"></i> Полное имя</label>
+                            <input type="text" id="fullname" name="fullname" placeholder="Иванов Иван Иванович" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                            <input type="email" id="email" name="email" placeholder="example@mail.com" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="phone"><i class="fas fa-phone-alt"></i> Телефон</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="birth_date"><i class="fas fa-calendar-alt"></i> Дата рождения</label>
+                            <input type="date" id="birth_date" name="birth_date" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="adress"><i class="fas fa-hospital"></i> Адрес рабочей поликлиники (не обязательно)</label>
+                            <input type="text" id="adress" name="adress" placeholder="г. Москва, ул. Примерная, д. 1">
+                        </div>
+                    </div>
+
+                    <div class="form-column">
+                        <div class="input-group">
+                            <label for="login"><i class="fas fa-user-circle"></i> Логин</label>
+                            <input type="text" id="login" name="login" placeholder="Придумайте логин" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="password"><i class="fas fa-lock"></i> Придумайте пароль</label>
+                            <input type="password" id="password" name="password" placeholder="Минимум 6 символов" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="confirm_password"><i class="fas fa-check-circle"></i> Подтвердите пароль</label>
+                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Введите пароль ещё раз" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="polis"><i class="fas fa-id-card"></i> Полис ОМС</label>
+                            <input type="text" id="polis" name="polis" placeholder="ХХХХ-ХХХХ-ХХХХ-ХХХХ" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="ser_num_pas"><i class="fas fa-passport"></i> Серия и номер паспорта</label>
+                            <input type="text" id="ser_num_pas" name="ser_num_pas" placeholder="1234 567890" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">Я соглашаюсь с <a href="#">условиями использования</a> и <a href="#">политикой конфиденциальности</a></label>
+                </div>
+
+                <button type="submit" class="btn-register">Зарегистрироваться</button>
+
+                <div class="social-register">
+                    <p>или зарегистрируйтесь через</p>
+                    <div class="social-icons">
+                        <a href="https://max.ru/" target="_blank" class="social-icon max-messenger">
+                            <img src="https://hour24.ru/wp-content/uploads/2023/03/gos.jpg" alt="Госуслуги" class="messenger-icon">
+                        </a>
+                        <a href="https://max.ru/" target="_blank" class="social-icon max-messenger">
+                            <img src="https://static.rustore.ru/imgproxy/ofFc_rqa9mtJ8pwrZE0IZTUcUv_nPTNcAWOtVSC5Io8/preset:vk_og_img/plain/https://static.rustore.ru/2026/1/24/6f/apk/2063618637/content/ICON/0564e0a3-a2be-414e-8fec-55257fedea8e.png@webp" alt="Max Messenger" class="messenger-icon">
+                        </a>
+                        <a href="https://max.ru/" target="_blank" class="social-icon max-messenger">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Mos.ru_logo.png" alt="Мос.ру" class="messenger-icon">
+                        </a>
+                    </div>
+                </div>
+
+                <div class="login-link">
+                    Уже есть аккаунт? <a href="entrance_page.html">Войти</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('registerForm');
+        const password = document.getElementById('password');
+        const confirmPassword = document.getElementById('confirm_password');
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (password.value !== confirmPassword.value) {
+                alert('Пароли не совпадают!');
+                return;
+            }
+
+            if (password.value.length < 6) {
+                alert('Пароль должен содержать минимум 6 символов!');
+                return;
+            }
+
+            const userData = {
+                fullname: document.getElementById('fullname').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                birthDate: document.getElementById('birth_date').value,
+                clinic: document.getElementById('adress').value || null,
+                login: document.getElementById('login').value,
+                password: password.value,
+                polis: document.getElementById('polis').value,
+                passport: document.getElementById('ser_num_pas').value
+            };
+
+            try {
+                const res = await fetch('/api/v1/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    alert(data.error || 'Ошибка регистрации');
+                    return;
+                }
+
+                alert('Регистрация успешно завершена! Войдите в систему.');
+                window.location.href = 'entrance_page.html';
+
+            } catch (err) {
+                console.error(err);
+                alert('Ошибка подключения к серверу');
+            }
+        });
+    </script>
+</body>
+</html>

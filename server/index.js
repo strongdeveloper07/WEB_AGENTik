@@ -16,6 +16,7 @@ const authRouter = require('./routes/auth');
 app.use('/api/v1/agents', require('./routes/agents'));
 app.use('/api/v1/auth',   require('./routes/auth'));
 app.use('/api/v1/patients', require('./routes/patients'));
+app.use('/api/v1/uploads', require('./routes/uploads'));
 
 app.use(express.static(path.join(__dirname, '../web')));
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, '../web/index.html')));

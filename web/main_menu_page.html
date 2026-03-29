@@ -6,6 +6,108 @@
     <title>Медицинская система | Панель врача</title>
     <link rel="stylesheet" href="main_menu_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .uploads-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            border: 1px solid #e1e1e1;
+        }
+        .uploads-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .uploads-section-header h2 { font-size: 17px; font-weight: 600; color: #333; }
+        .uploads-section-header h2 i { color: #667eea; margin-right: 8px; }
+        .uploads-badge {
+            background: #ff6b6b;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-left: 8px;
+        }
+        .uploads-badge.zero { background: #2ecc71; }
+        .uploads-mini-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .uploads-mini-table th {
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 2px solid #e1e1e1;
+            background: white;
+        }
+        .uploads-mini-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: middle;
+            background: white;
+        }
+        .uploads-mini-table tr:last-child td { border-bottom: none; }
+        .uploads-mini-table tr:hover td { background: #f5f5ff; }
+        .file-name-cell { display: flex; align-items: center; gap: 8px; }
+        .file-name-cell i { color: #667eea; }
+        .agent-chip {
+            background: #efefff;
+            color: #667eea;
+            padding: 3px 9px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+        .btn-attach-file {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 6px 13px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-attach-file:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(102,126,234,0.4); }
+        .uploads-empty {
+            text-align: center;
+            padding: 18px;
+            color: #2ecc71;
+            font-weight: 500;
+            font-size: 14px;
+            background: white;
+            border-radius: 10px;
+        }
+        .uploads-empty i { margin-right: 6px; }
+        #attachFileModal .modal-content { max-width: 440px; }
+        .attach-file-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 12px 15px;
+            margin-bottom: 18px;
+            font-size: 13px;
+            color: #555;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .attach-file-info i { color: #667eea; font-size: 16px; }
+        .toast-msg {
+            position: fixed; bottom: 28px; right: 28px;
+            padding: 13px 22px; border-radius: 12px;
+            font-size: 14px; font-weight: 500; color: white;
+            opacity: 0; transform: translateY(15px);
+            transition: all 0.3s ease; z-index: 9999; pointer-events: none;
+        }
+        .toast-msg.show { opacity: 1; transform: translateY(0); }
+        .toast-msg.success { background: #2ecc71; }
+        .toast-msg.error { background: #e74c3c; }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -50,6 +152,22 @@
                 </div>
             </div>
 
+            <!-- СЕКЦИЯ ФАЙЛОВ АГЕНТОВ -->
+            <div class="uploads-section">
+                <div class="uploads-section-header">
+                    <h2>
+                        <i class="fas fa-folder-open"></i> Файлы агентов
+                        <span class="uploads-badge" id="unlinkedBadge">0</span>
+                    </h2>
+                    <span style="font-size:12px;color:#999;">Не привязаны к пациенту</span>
+                </div>
+                <div id="uploadsContainer">
+                    <div style="text-align:center;padding:15px;color:#aaa;font-size:13px;">
+                        <i class="fas fa-spinner fa-spin"></i> Загрузка...
+                    </div>
+                </div>
+            </div>
+
             <div class="action-bar">
                 <div class="search-box">
                     <i class="fas fa-search"></i>
@@ -77,6 +195,7 @@
         </div>
     </div>
 
+    <!-- Модальное окно добавления пациента -->
     <div id="addModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -110,22 +229,56 @@
         </div>
     </div>
 
+    <!-- Модальное окно привязки файла -->
+    <div id="attachFileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-link"></i> Привязать к пациенту</h2>
+                <span class="close" onclick="closeAttachModal()">&times;</span>
+            </div>
+            <div style="padding: 25px;">
+                <div class="attach-file-info">
+                    <i class="fas fa-file-medical"></i>
+                    <span id="attachFileName">—</span>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-user" style="color:#667eea;margin-right:6px;"></i> Выберите пациента</label>
+                    <select id="attachPatientSelect" style="width:100%;padding:12px 15px;border:2px solid #e1e1e1;border-radius:12px;font-size:15px;outline:none;font-family:inherit;background:white;">
+                        <option value="">— Выберите пациента —</option>
+                    </select>
+                </div>
+                <div class="form-buttons" style="margin-top:20px;">
+                    <button type="button" class="btn-cancel" onclick="closeAttachModal()">Отмена</button>
+                    <button type="button" class="btn-submit" onclick="confirmAttachFile()">
+                        <i class="fas fa-link"></i> Привязать
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-msg" id="toastMsg"></div>
+
     <script>
         let patients = [];
+        let uploads = [];
+        let currentAttachId = null;
 
         function getToken() {
             return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
         }
 
+        function showToast(msg, type = 'success') {
+            const t = document.getElementById('toastMsg');
+            t.textContent = msg;
+            t.className = 'toast-msg ' + type + ' show';
+            setTimeout(() => t.className = 'toast-msg', 3000);
+        }
+
         function checkAuth() {
-            if (!getToken()) {
-                window.location.href = 'entrance_page.html';
-                return false;
-            }
+            if (!getToken()) { window.location.href = 'entrance_page.html'; return false; }
             const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-            if (user.fullname) {
-                document.querySelector('.doctor-info span').textContent = user.fullname;
-            }
+            if (user.fullname) document.querySelector('.doctor-info span').textContent = user.fullname;
             return true;
         }
 
@@ -134,19 +287,103 @@
                 const res = await fetch('/api/v1/patients', {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
-
-                if (res.status === 401 || res.status === 403) {
-                    window.location.href = 'entrance_page.html';
-                    return;
-                }
-
+                if (res.status === 401 || res.status === 403) { window.location.href = 'entrance_page.html'; return; }
                 const data = await res.json();
                 patients = data.patients || [];
                 updateStats();
                 renderTable();
-            } catch (err) {
-                console.error('Ошибка загрузки пациентов:', err);
+                fillAttachSelect();
+            } catch (err) { console.error('Ошибка загрузки пациентов:', err); }
+        }
+
+        async function loadUploads() {
+            try {
+                const res = await fetch('/api/v1/uploads', {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (!res.ok) return;
+                const data = await res.json();
+                uploads = (data.uploads || []).filter(u => !u.patient_id || u.patient_id === 0);
+                renderUploadsSection();
+            } catch (err) { console.error('Ошибка загрузки файлов:', err); }
+        }
+
+        function renderUploadsSection() {
+            const container = document.getElementById('uploadsContainer');
+            const badge = document.getElementById('unlinkedBadge');
+            badge.textContent = uploads.length;
+            badge.className = 'uploads-badge' + (uploads.length === 0 ? ' zero' : '');
+
+            if (uploads.length === 0) {
+                container.innerHTML = '<div class="uploads-empty"><i class="fas fa-check-circle"></i> Все файлы привязаны к пациентам</div>';
+                return;
             }
+
+            container.innerHTML = `
+                <div style="overflow-x:auto;border-radius:10px;border:1px solid #e1e1e1;">
+                    <table class="uploads-mini-table">
+                        <thead>
+                            <tr>
+                                <th><i class="fas fa-file" style="color:#667eea;margin-right:5px;"></i>Файл</th>
+                                <th><i class="fas fa-robot" style="color:#667eea;margin-right:5px;"></i>Агент</th>
+                                <th><i class="fas fa-clock" style="color:#667eea;margin-right:5px;"></i>Загружен</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${uploads.map(u => `
+                                <tr>
+                                    <td><div class="file-name-cell"><i class="fas fa-file-waveform"></i><strong>${u.filename}</strong></div></td>
+                                    <td><span class="agent-chip"><i class="fas fa-robot"></i> ${u.agent_uid}</span></td>
+                                    <td style="color:#888;font-size:12px;">${formatDate(u.uploaded_at)}</td>
+                                    <td><button class="btn-attach-file" onclick="openAttachModal(${u.id}, '${u.filename}')"><i class="fas fa-link"></i> Привязать</button></td>
+                                </tr>`).join('')}
+                        </tbody>
+                    </table>
+                </div>`;
+        }
+
+        function formatDate(str) {
+            if (!str) return '—';
+            return new Date(str).toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+        }
+
+        function fillAttachSelect() {
+            const sel = document.getElementById('attachPatientSelect');
+            sel.innerHTML = '<option value="">— Выберите пациента —</option>';
+            patients.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = p.fullname;
+                sel.appendChild(opt);
+            });
+        }
+
+        function openAttachModal(uploadId, filename) {
+            currentAttachId = uploadId;
+            document.getElementById('attachFileName').textContent = filename;
+            document.getElementById('attachPatientSelect').value = '';
+            document.getElementById('attachFileModal').style.display = 'flex';
+        }
+
+        function closeAttachModal() {
+            document.getElementById('attachFileModal').style.display = 'none';
+        }
+
+        async function confirmAttachFile() {
+            const patientId = document.getElementById('attachPatientSelect').value;
+            if (!patientId) { showToast('Выберите пациента', 'error'); return; }
+            try {
+                const res = await fetch(`/api/v1/uploads/${currentAttachId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+                    body: JSON.stringify({ patient_id: parseInt(patientId) })
+                });
+                if (!res.ok) throw new Error();
+                showToast('Файл успешно привязан к пациенту');
+                closeAttachModal();
+                await loadUploads();
+            } catch { showToast('Ошибка привязки файла', 'error'); }
         }
 
         function updateStats() {
@@ -160,19 +397,16 @@
         function renderTable() {
             const tbody = document.getElementById('patientsTableBody');
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-
             const filtered = patients.filter(p =>
                 p.fullname.toLowerCase().includes(searchTerm) ||
                 (p.phone && p.phone.includes(searchTerm)) ||
                 p.polis.includes(searchTerm) ||
                 (p.clinic && p.clinic.toLowerCase().includes(searchTerm))
             );
-
             if (filtered.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;"><i class="fas fa-search"></i> Пациенты не найдены</td></tr>';
                 return;
             }
-
             tbody.innerHTML = filtered.map(patient => `
                 <tr>
                     <td><strong>${patient.fullname}</strong></td>
@@ -184,61 +418,37 @@
                             <i class="fas fa-folder-open"></i> Подробное досье
                         </button>
                     </td>
-                </tr>
-            `).join('');
+                </tr>`).join('');
         }
 
         function searchPatients() { renderTable(); }
-
-        function viewDossier(id) {
-            window.location.href = `patient_page.html?id=${id}`;
-        }
-
-        function openAddModal() {
-            document.getElementById('addModal').style.display = 'flex';
-            document.getElementById('addPatientForm').reset();
-        }
-
-        function closeAddModal() {
-            document.getElementById('addModal').style.display = 'none';
-        }
+        function viewDossier(id) { window.location.href = `patient_page.html?id=${id}`; }
+        function openAddModal() { document.getElementById('addModal').style.display = 'flex'; document.getElementById('addPatientForm').reset(); }
+        function closeAddModal() { document.getElementById('addModal').style.display = 'none'; }
 
         document.getElementById('addPatientForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-
             const newPatient = {
                 fullname: document.getElementById('newFullname').value,
                 phone: document.getElementById('newPhone').value,
                 polis: document.getElementById('newPolis').value,
                 clinic: document.getElementById('newClinic').value
             };
-
             try {
                 const res = await fetch('/api/v1/patients', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${getToken()}`
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
                     body: JSON.stringify(newPatient)
                 });
-
                 const data = await res.json();
-
-                if (!res.ok) {
-                    alert(data.error || 'Ошибка добавления пациента');
-                    return;
-                }
-
+                if (!res.ok) { alert(data.error || 'Ошибка добавления пациента'); return; }
                 patients.unshift(data.patient);
                 updateStats();
                 renderTable();
+                fillAttachSelect();
                 closeAddModal();
-                alert('Пациент успешно добавлен!');
-            } catch (err) {
-                alert('Ошибка подключения к серверу');
-                console.error(err);
-            }
+                showToast('Пациент успешно добавлен!');
+            } catch (err) { alert('Ошибка подключения к серверу'); }
         });
 
         document.getElementById('logoutBtn').addEventListener('click', function(e) {
@@ -250,11 +460,11 @@
         });
 
         window.onclick = function(event) {
-            const modal = document.getElementById('addModal');
-            if (event.target === modal) closeAddModal();
+            if (event.target === document.getElementById('addModal')) closeAddModal();
+            if (event.target === document.getElementById('attachFileModal')) closeAttachModal();
         };
 
-        if (checkAuth()) loadPatients();
+        if (checkAuth()) { loadPatients(); loadUploads(); }
     </script>
 </body>
 </html>

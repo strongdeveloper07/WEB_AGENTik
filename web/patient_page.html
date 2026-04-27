@@ -6,59 +6,13 @@
     <title>Досье пациента | Медицинская система</title>
     <link rel="stylesheet" href="patient_page_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .ecg-list { display: flex; flex-direction: column; gap: 10px; }
-        .ecg-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f8f9fa;
-            border: 1px solid #e1e1e1;
-            border-radius: 10px;
-            padding: 12px 15px;
-            transition: background 0.2s;
-        }
-        .ecg-item:hover { background: #f0f0ff; }
-        .ecg-item-left { display: flex; align-items: center; gap: 12px; }
-        .ecg-item-left i { color: #667eea; font-size: 20px; }
-        .ecg-item-name { font-weight: 600; font-size: 14px; color: #333; }
-        .ecg-item-date { font-size: 12px; color: #999; margin-top: 2px; }
-        .btn-open-ecg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 7px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.25s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            text-decoration: none;
-        }
-        .btn-open-ecg:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(102,126,234,0.4); }
-        .ecg-empty { text-align: center; padding: 20px; color: #bbb; font-size: 14px; }
-        .ecg-empty i { font-size: 28px; display: block; margin-bottom: 8px; opacity: 0.5; }
-        .toast-msg {
-            position: fixed; bottom: 28px; right: 28px;
-            padding: 13px 22px; border-radius: 12px;
-            font-size: 14px; font-weight: 500; color: white;
-            opacity: 0; transform: translateY(15px);
-            transition: all 0.3s ease; z-index: 9999; pointer-events: none;
-        }
-        .toast-msg.show { opacity: 1; transform: translateY(0); }
-        .toast-msg.success { background: #2ecc71; }
-        .toast-msg.error { background: #e74c3c; }
-    </style>
 </head>
 <body>
     <div class="container">
         <div class="dossier-wrapper">
             <div class="dossier-header">
                 <div class="header-left">
-                    <a href="main_menu_page.html" class="btn-back">
+                    <a href="main-menu-page.html" class="btn-back">
                         <i class="fas fa-arrow-left"></i> Назад к списку
                     </a>
                     <h1><i class="fas fa-folder-open"></i> Досье пациента</h1>
@@ -72,6 +26,7 @@
             </div>
 
             <div class="dossier-content">
+                <!-- ЛЕВАЯ КОЛОНКА -->
                 <div class="dossier-left">
                     <div class="photo-section">
                         <div class="patient-photo" id="patientPhoto">
@@ -81,7 +36,7 @@
                                     <i class="fas fa-camera"></i>
                                     <span>Загрузить фото</span>
                                 </label>
-                                <input type="file" id="photoUpload" accept="image/*" style="display: none;">
+                                <input type="file" id="photoUpload" accept="image/*" style="display:none;">
                             </div>
                         </div>
                         <div class="patient-status">
@@ -105,12 +60,32 @@
                             <span class="stat-label">Всего визитов:</span>
                             <span class="stat-value" id="totalVisits">0</span>
                         </div>
-                        <button onclick="addVisit()" style="margin-top:15px;width:100%;padding:10px;background:linear-gradient(135deg,#667eea,#764ba2);color:white;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:600;">
-                            <i class="fas fa-calendar-plus"></i> Зафиксировать визит
+                        <button class="btn-visit" onclick="addVisit()">
+                            <i class="fas fa-calendar-plus"></i> Добавить визит
+                        </button>
+                    </div>
+
+                    <!-- Карточка кардиограмм -->
+                    <div class="info-card">
+                        <h3><i class="fas fa-heart-pulse"></i> Кардиограммы</h3>
+                        <div class="stat-item">
+                            <span class="stat-label">Всего записей:</span>
+                            <span class="stat-value" id="ecgCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Последняя запись:</span>
+                            <span class="stat-value" id="ecgLastDate">—</span>
+                        </div>
+                        <button class="btn-visit" onclick="openEcgModal()">
+                            <i class="fas fa-upload"></i> Загрузить кардиограмму
+                        </button>
+                        <button class="btn-visit" onclick="scrollToEcg()" style="margin-top:8px;background:white;color:#667eea;border:2px solid #667eea;">
+                            <i class="fas fa-list"></i> Просмотреть все
                         </button>
                     </div>
                 </div>
 
+                <!-- ПРАВАЯ КОЛОНКА -->
                 <div class="dossier-right">
                     <form id="patientForm">
                         <div class="form-section">
@@ -159,16 +134,6 @@
                                 <label><i class="fas fa-pills"></i> Хронические заболевания</label>
                                 <textarea id="chronicDiseases" rows="3" placeholder="Укажите хронические заболевания"></textarea>
                             </div>
-
-                            <!-- КАРДИОГРАММЫ -->
-                            <div class="input-group" style="margin-top:5px;">
-                                <label><i class="fas fa-heart-pulse"></i> Кардиограммы пациента</label>
-                                <div id="ecgFilesList">
-                                    <div class="ecg-empty">
-                                        <i class="fas fa-spinner fa-spin"></i> Загрузка...
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="form-buttons">
@@ -178,45 +143,86 @@
                             </button>
                         </div>
                     </form>
+
+                    <!-- БЛОК ВСЕХ КАРДИОГРАММ -->
+                    <div class="form-section" id="ecgSection" style="margin-top:25px;">
+                        <h3><i class="fas fa-heart-pulse"></i> Все кардиограммы</h3>
+                        <div id="ecgList">
+                            <div class="ecg-empty">
+                                <i class="fas fa-spinner fa-spin"></i> Загрузка...
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="toast-msg" id="toastMsg"></div>
+    <!-- Модальное окно: загрузить кардиограмму -->
+    <div id="ecgModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-upload"></i> Загрузить кардиограмму</h2>
+                <span class="close" onclick="closeEcgModal()">&times;</span>
+            </div>
+            <div style="padding:25px;">
+                <div class="input-group">
+                    <label><i class="fas fa-stethoscope" style="color:#667eea;margin-right:6px;"></i> Кардиограф *</label>
+                    <select id="ecgCardiographSelect" required style="width:100%;padding:12px 15px;border:2px solid #e1e1e1;border-radius:12px;font-size:15px;outline:none;font-family:inherit;background:white;">
+                        <option value="">— Выберите кардиограф —</option>
+                    </select>
+                </div>
+
+                <div class="input-group" style="margin-top:15px;">
+                    <label><i class="fas fa-calendar" style="color:#667eea;margin-right:6px;"></i> Дата исследования</label>
+                    <input type="date" id="ecgDate" style="width:100%;padding:12px 15px;border:2px solid #e1e1e1;border-radius:12px;font-size:15px;outline:none;font-family:inherit;box-sizing:border-box;">
+                </div>
+
+                <div class="input-group" style="margin-top:15px;">
+                    <label><i class="fas fa-comment" style="color:#667eea;margin-right:6px;"></i> Примечание</label>
+                    <input type="text" id="ecgNote" placeholder="Необязательно" style="width:100%;padding:12px 15px;border:2px solid #e1e1e1;border-radius:12px;font-size:15px;outline:none;font-family:inherit;box-sizing:border-box;">
+                </div>
+
+                <div class="input-group" style="margin-top:15px;">
+                    <label><i class="fas fa-file-medical" style="color:#667eea;margin-right:6px;"></i> Файл кардиограммы</label>
+                    <div id="dropZone" onclick="document.getElementById('ecgFileInput').click()" style="border:2px dashed #c5c5e8;border-radius:12px;padding:25px;text-align:center;cursor:pointer;background:#fafafe;transition:all 0.25s;">
+                        <i class="fas fa-cloud-upload-alt" style="font-size:32px;color:#c5c5e8;display:block;margin-bottom:8px;"></i>
+                        <p style="margin:0 0 4px;font-size:14px;font-weight:500;color:#888;">Нажмите или перетащите файл для загрузки</p>
+                        <small style="font-size:12px;color:#bbb;">Поддерживаются: PNG, JPG, PDF</small>
+                        <div id="selectedFileName" style="display:none;margin-top:10px;font-weight:600;color:#667eea;"></div>
+                    </div>
+                    <input type="file" id="ecgFileInput" accept=".png,.jpg,.jpeg,.pdf" style="display:none;" onchange="onFileSelected(this)">
+                </div>
+
+                <div class="form-buttons" style="margin-top:20px;">
+                    <button type="button" class="btn-cancel" onclick="closeEcgModal()">Отмена</button>
+                    <button type="button" class="btn-save" onclick="saveEcg()">
+                        <i class="fas fa-save"></i> Сохранить кардиограмму
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script>
         let patientId = null;
         let patientData = null;
+        let ecgFiles = [];
 
         function getToken() {
             return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
         }
 
-        function showToast(msg, type = 'success') {
-            const t = document.getElementById('toastMsg');
-            t.textContent = msg;
-            t.className = 'toast-msg ' + type + ' show';
-            setTimeout(() => t.className = 'toast-msg', 3000);
-        }
-
-        function formatDate(str) {
-            if (!str) return '—';
-            return new Date(str).toLocaleString('ru-RU', {
-                day: '2-digit', month: '2-digit', year: 'numeric',
-                hour: '2-digit', minute: '2-digit'
-            });
-        }
-
         window.onload = async function() {
-            if (!getToken()) { window.location.href = 'entrance_page.html'; return; }
+            if (!getToken()) { window.location.href = 'entrance-page.html'; return; }
             const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
             if (user.fullname) document.querySelector('.doctor-info span').textContent = user.fullname;
             const urlParams = new URLSearchParams(window.location.search);
             patientId = parseInt(urlParams.get('id'));
-            if (!patientId) { alert('Ошибка: пациент не найден'); window.location.href = 'main_menu_page.html'; return; }
+            if (!patientId) { alert('Ошибка: пациент не найден'); window.location.href = 'main-menu-page.html'; return; }
             await loadPatientData();
             await loadEcgFiles();
+            await loadCardiographs();
         };
 
         async function loadPatientData() {
@@ -224,70 +230,170 @@
                 const res = await fetch(`/api/v1/patients/${patientId}`, {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
-                if (res.status === 401 || res.status === 403) { window.location.href = 'entrance_page.html'; return; }
-                if (res.status === 404) { alert('Пациент не найден'); window.location.href = 'main_menu_page.html'; return; }
+                if (res.status === 401 || res.status === 403) { window.location.href = 'entrance-page.html'; return; }
+                if (res.status === 404) { alert('Пациент не найден'); window.location.href = 'main-menu-page.html'; return; }
                 patientData = await res.json();
-                document.getElementById('fullname').value = patientData.fullname || '';
-                document.getElementById('phone').value = patientData.phone || '';
-                document.getElementById('polis').value = patientData.polis || '';
-                document.getElementById('clinic').value = patientData.clinic || '';
-                document.getElementById('bloodType').value = patientData.blood_type || '';
-                document.getElementById('allergies').value = patientData.allergies || '';
+                document.getElementById('fullname').value        = patientData.fullname || '';
+                document.getElementById('phone').value           = patientData.phone || '';
+                document.getElementById('polis').value           = patientData.polis || '';
+                document.getElementById('clinic').value          = patientData.clinic || '';
+                document.getElementById('bloodType').value       = patientData.blood_type || '';
+                document.getElementById('allergies').value       = patientData.allergies || '';
                 document.getElementById('chronicDiseases').value = patientData.chronic_diseases || '';
-                document.getElementById('regDate').textContent = patientData.created_at
+                document.getElementById('regDate').textContent   = patientData.created_at
                     ? new Date(patientData.created_at).toLocaleDateString('ru-RU') : '—';
-                document.getElementById('lastVisit').textContent = patientData.last_visit || '—';
+                document.getElementById('lastVisit').textContent  = patientData.last_visit || '—';
                 document.getElementById('totalVisits').textContent = patientData.total_visits || 0;
                 if (patientData.photo) document.getElementById('patientImage').src = patientData.photo;
             } catch (err) {
-                console.error('Ошибка загрузки пациента:', err);
+                console.error(err);
                 alert('Ошибка подключения к серверу');
             }
         }
 
         async function loadEcgFiles() {
-            const container = document.getElementById('ecgFilesList');
+            const listEl = document.getElementById('ecgList');
             try {
                 const res = await fetch(`/api/v1/uploads/patient/${patientId}`, {
                     headers: { 'Authorization': `Bearer ${getToken()}` }
                 });
                 if (!res.ok) throw new Error();
                 const data = await res.json();
-                const files = data.uploads || [];
-                if (files.length === 0) {
-                    container.innerHTML = `<div class="ecg-empty"><i class="fas fa-file-medical"></i>Нет прикреплённых кардиограмм</div>`;
-                    return;
-                }
-                container.innerHTML = `<div class="ecg-list">${files.map(f => `
-                    <div class="ecg-item">
-                        <div class="ecg-item-left">
-                            <i class="fas fa-file-waveform"></i>
-                            <div>
-                                <div class="ecg-item-name">${f.filename}</div>
-                                <div class="ecg-item-date">${formatDate(f.uploaded_at)}</div>
+                ecgFiles = data.uploads || [];
+                document.getElementById('ecgCount').textContent   = ecgFiles.length;
+                document.getElementById('ecgLastDate').textContent = ecgFiles.length > 0
+                    ? formatDate(ecgFiles[0].uploaded_at) : '—';
+                renderEcgList();
+            } catch {
+                listEl.innerHTML = '<div class="ecg-empty"><i class="fas fa-exclamation-circle"></i> Не удалось загрузить файлы</div>';
+            }
+        }
+
+        function renderEcgList() {
+            const listEl = document.getElementById('ecgList');
+            if (ecgFiles.length === 0) {
+                listEl.innerHTML = '<div class="ecg-empty"><i class="fas fa-file-medical"></i> Нет загруженных кардиограмм</div>';
+                return;
+            }
+            listEl.innerHTML = ecgFiles.map(f => `
+                <div class="ecg-item">
+                    <div class="ecg-item-left">
+                        <i class="fas fa-file-waveform"></i>
+                        <div>
+                            <div class="ecg-item-name">${f.filename}</div>
+                            <div class="ecg-item-meta">
+                                <span class="cardiograph-badge">
+                                    <i class="fas fa-stethoscope"></i>
+                                    Кардиограф №${f.cardiograph_id || '?'} — ${f.cardiograph_name || f.agent_uid}
+                                </span>
+                                <span class="ecg-item-date">${formatDate(f.uploaded_at)}</span>
                             </div>
                         </div>
-                        <a href="/api/v1/uploads/${f.id}/file" class="btn-open-ecg" target="_blank">
-                            <i class="fas fa-download"></i> Открыть
-                        </a>
-                    </div>`).join('')}
-                </div>`;
-            } catch {
-                container.innerHTML = `<div class="ecg-empty"><i class="fas fa-exclamation-circle"></i>Не удалось загрузить файлы</div>`;
+                    </div>
+                    <a href="/api/v1/uploads/${f.id}/file" class="btn-open-ecg" target="_blank">
+                        <i class="fas fa-download"></i> Открыть
+                    </a>
+                </div>`).join('');
+        }
+
+        async function loadCardiographs() {
+            try {
+                const res = await fetch('/api/v1/agents/cardiographs/list', {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                });
+                if (!res.ok) return;
+                const data = await res.json();
+                const sel = document.getElementById('ecgCardiographSelect');
+                sel.innerHTML = '<option value="">— Выберите кардиограф —</option>';
+                (data.cardiographs || []).forEach(cg => {
+                    const opt = document.createElement('option');
+                    opt.value = cg.agent_uid;
+                    opt.textContent = `${cg.status === 'online' ? '🟢' : '⚪'} №${cg.id} — ${cg.name}`;
+                    sel.appendChild(opt);
+                });
+            } catch (err) { console.error('Не удалось загрузить кардиографы:', err); }
+        }
+
+        function openEcgModal() {
+            document.getElementById('ecgModal').style.display = 'flex';
+            document.getElementById('ecgCardiographSelect').value = '';
+            document.getElementById('ecgDate').value = new Date().toISOString().slice(0, 10);
+            document.getElementById('ecgNote').value = '';
+            document.getElementById('ecgFileInput').value = '';
+            document.getElementById('selectedFileName').style.display = 'none';
+        }
+
+        function closeEcgModal() {
+            document.getElementById('ecgModal').style.display = 'none';
+        }
+
+        function onFileSelected(input) {
+            const el = document.getElementById('selectedFileName');
+            if (input.files.length > 0) {
+                el.textContent = input.files[0].name;
+                el.style.display = 'block';
+            } else {
+                el.style.display = 'none';
             }
+        }
+
+        async function saveEcg() {
+            const agentUid = document.getElementById('ecgCardiographSelect').value;
+            const file = document.getElementById('ecgFileInput').files[0];
+            if (!agentUid) { alert('Выберите кардиограф'); return; }
+            if (!file)     { alert('Выберите файл кардиограммы'); return; }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const uploadRes = await fetch(`/api/v1/agents/${agentUid}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                if (!uploadRes.ok) throw new Error('Ошибка загрузки файла');
+
+                // находим только что загруженный файл и привязываем к пациенту
+                const allUploads = await fetch('/api/v1/uploads', {
+                    headers: { 'Authorization': `Bearer ${getToken()}` }
+                }).then(r => r.json());
+
+                const newUpload = (allUploads.uploads || []).find(
+                    u => u.agent_uid === agentUid && !u.patient_id
+                );
+
+                if (newUpload) {
+                    await fetch(`/api/v1/uploads/${newUpload.id}`, {
+                        method: 'PATCH',
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
+                        body: JSON.stringify({ patient_id: patientId })
+                    });
+                }
+
+                closeEcgModal();
+                await loadEcgFiles();
+                alert('Кардиограмма успешно сохранена!');
+            } catch (err) {
+                console.error(err);
+                alert('Ошибка при сохранении кардиограммы');
+            }
+        }
+
+        function scrollToEcg() {
+            document.getElementById('ecgSection').scrollIntoView({ behavior: 'smooth' });
         }
 
         document.getElementById('patientForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const updatedData = {
-                fullname: document.getElementById('fullname').value,
-                phone: document.getElementById('phone').value,
-                polis: document.getElementById('polis').value,
-                clinic: document.getElementById('clinic').value,
-                blood_type: document.getElementById('bloodType').value,
-                allergies: document.getElementById('allergies').value,
+                fullname:         document.getElementById('fullname').value,
+                phone:            document.getElementById('phone').value,
+                polis:            document.getElementById('polis').value,
+                clinic:           document.getElementById('clinic').value,
+                blood_type:       document.getElementById('bloodType').value,
+                allergies:        document.getElementById('allergies').value,
                 chronic_diseases: document.getElementById('chronicDiseases').value,
-                photo: patientData.photo || null
+                photo:            patientData.photo || null
             };
             try {
                 const res = await fetch(`/api/v1/patients/${patientId}`, {
@@ -298,19 +404,19 @@
                 const data = await res.json();
                 if (!res.ok) { alert(data.error || 'Ошибка сохранения'); return; }
                 patientData = data.patient;
-                showToast('Данные успешно сохранены!');
+                alert('Данные успешно сохранены!');
             } catch (err) { alert('Ошибка подключения к серверу'); }
         });
 
         function cancelEdit() {
             if (confirm('Отменить изменения? Несохраненные данные будут потеряны.')) {
-                window.location.href = 'main_menu_page.html';
+                window.location.href = 'main-menu-page.html';
             }
         }
 
         document.getElementById('photoUpload').addEventListener('change', async function(e) {
             const file = e.target.files[0];
-            if (!file || !file.type.startsWith('image/')) { alert('Пожалуйста, выберите файл изображения'); return; }
+            if (!file || !file.type.startsWith('image/')) { alert('Выберите файл изображения'); return; }
             const reader = new FileReader();
             reader.onload = async function(event) {
                 const photoData = event.target.result;
@@ -321,7 +427,7 @@
                         headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${getToken()}` },
                         body: JSON.stringify({ ...patientData, photo: photoData })
                     });
-                    if (res.ok) { patientData = (await res.json()).patient; showToast('Фото успешно загружено!'); }
+                    if (res.ok) patientData = (await res.json()).patient;
                 } catch (err) { console.error(err); }
             };
             reader.readAsDataURL(file);
@@ -335,12 +441,36 @@
                 });
                 const data = await res.json();
                 if (!res.ok) { alert(data.error || 'Ошибка'); return; }
-                const visits = parseInt(document.getElementById('totalVisits').textContent || '0') + 1;
-                document.getElementById('lastVisit').textContent = data.last_visit;
-                document.getElementById('totalVisits').textContent = visits;
-                showToast('Визит зафиксирован!');
+                document.getElementById('lastVisit').textContent   = data.last_visit;
+                document.getElementById('totalVisits').textContent =
+                    parseInt(document.getElementById('totalVisits').textContent || '0') + 1;
+                alert('Визит добавлен!');
             } catch (err) { alert('Ошибка подключения к серверу'); }
         }
+
+        function formatDate(str) {
+            if (!str) return '—';
+            return new Date(str).toLocaleString('ru-RU', {
+                day: '2-digit', month: '2-digit', year: 'numeric',
+                hour: '2-digit', minute: '2-digit'
+            });
+        }
+
+        window.onclick = function(event) {
+            if (event.target === document.getElementById('ecgModal')) closeEcgModal();
+        };
+
+        const dropZone = document.getElementById('dropZone');
+        dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.style.borderColor = '#667eea'; });
+        dropZone.addEventListener('dragleave', () => { dropZone.style.borderColor = '#c5c5e8'; });
+        dropZone.addEventListener('drop', e => {
+            e.preventDefault();
+            dropZone.style.borderColor = '#c5c5e8';
+            if (e.dataTransfer.files.length) {
+                document.getElementById('ecgFileInput').files = e.dataTransfer.files;
+                onFileSelected(document.getElementById('ecgFileInput'));
+            }
+        });
     </script>
 </body>
 </html>

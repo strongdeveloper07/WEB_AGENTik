@@ -224,6 +224,30 @@ body {
     font-size: 13px;
 }
 
+/* Кнопка визита */
+.btn-visit {
+    width: 100%;
+    padding: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 15px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-visit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
 /* Правая колонка */
 .dossier-right {
     background: #f8f9fa;
@@ -306,7 +330,7 @@ body {
     min-height: 80px;
 }
 
-/* Кнопки */
+/* Кнопки формы */
 .form-buttons {
     display: flex;
     gap: 15px;
@@ -351,7 +375,197 @@ body {
     box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
 }
 
-/* Адаптивность */
+/* ===== Модальное окно ===== */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 550px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.modal-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.modal-header h2 i {
+    margin-right: 10px;
+}
+
+.close {
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+    line-height: 1;
+}
+
+.close:hover {
+    opacity: 1;
+}
+
+/* ===== Кардиограммы ===== */
+.ecg-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f8f9fa;
+    border: 1px solid #e1e1e1;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    transition: background 0.2s;
+}
+
+.ecg-item:hover {
+    background: #f0f0ff;
+}
+
+.ecg-item-left {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.ecg-item-left > i {
+    color: #667eea;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.ecg-item-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.ecg-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.cardiograph-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: #efefff;
+    color: #667eea;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.cardiograph-badge i {
+    font-size: 11px;
+}
+
+.ecg-item-date {
+    font-size: 12px;
+    color: #999;
+}
+
+.btn-open-ecg {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s;
+    white-space: nowrap;
+}
+
+.btn-open-ecg:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(102, 126, 234, 0.4);
+}
+
+.ecg-empty {
+    text-align: center;
+    padding: 25px;
+    color: #bbb;
+    font-size: 14px;
+}
+
+.ecg-empty i {
+    font-size: 30px;
+    display: block;
+    margin-bottom: 10px;
+    opacity: 0.5;
+}
+
+/* Drop zone для загрузки файла */
+.upload-drop-zone {
+    border: 2px dashed #c5c5e8;
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.25s;
+    background: #fafafe;
+    color: #888;
+}
+
+.upload-drop-zone:hover {
+    border-color: #667eea;
+    background: #f5f5ff;
+}
+
+.upload-drop-zone i {
+    font-size: 32px;
+    color: #c5c5e8;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.upload-drop-zone p {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.upload-drop-zone small {
+    font-size: 12px;
+    color: #bbb;
+}
+
+/* ===== Адаптивность ===== */
 @media (max-width: 900px) {
     .dossier-content {
         grid-template-columns: 1fr;
@@ -395,6 +609,17 @@ body {
 
     .form-section {
         padding: 15px;
+    }
+
+    .ecg-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .btn-open-ecg {
+        width: 100%;
+        justify-content: center;
     }
 }
 

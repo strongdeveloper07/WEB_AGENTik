@@ -29,6 +29,14 @@ db.exec(`CREATE TABLE IF NOT EXISTS agents (
   status TEXT DEFAULT 'online'
 )`);
 
+db.exec(`CREATE TABLE IF NOT EXISTS cardiographs (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  agent_uid TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (agent_uid) REFERENCES agents(uid)
+)`);
+
 db.exec(`CREATE TABLE IF NOT EXISTS tasks (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   agent_uid TEXT NOT NULL,

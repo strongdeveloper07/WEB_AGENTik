@@ -6,6 +6,38 @@
     <title>Регистрация | Создать аккаунт</title>
     <link rel="stylesheet" href="registration_page_style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .field-error {
+            display: block;
+            color: #e53e3e;
+            font-size: 12px;
+            margin-top: 4px;
+            min-height: 16px;
+        }
+        input.input-invalid, select.input-invalid {
+            border-color: #e53e3e !important;
+            box-shadow: 0 0 0 2px rgba(229,62,62,0.15) !important;
+        }
+        /* Select выглядит идентично input полям */
+        .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e1e1e1;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+            font-family: inherit;
+            background: white;
+            color: #555;
+            cursor: pointer;
+            appearance: auto;
+        }
+        .input-group select:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -15,51 +47,96 @@
                 <p>Пожалуйста, заполните форму регистрации</p>
             </div>
 
-            <form action="#" method="post" id="registerForm">
+            <form action="#" method="post" id="registerForm" novalidate>
                 <div class="form-columns">
                     <div class="form-column">
                         <div class="input-group">
                             <label for="fullname"><i class="fas fa-user"></i> Полное имя</label>
-                            <input type="text" id="fullname" name="fullname" placeholder="Иванов Иван Иванович" required>
+                            <input type="text" id="fullname" name="fullname"
+                                placeholder="Иванов Иван Иванович"
+                                maxlength="100"
+                                required>
+                            <span class="field-error" id="err-fullname"></span>
                         </div>
                         <div class="input-group">
                             <label for="email"><i class="fas fa-envelope"></i> Email</label>
-                            <input type="email" id="email" name="email" placeholder="example@mail.com" required>
+                            <input type="email" id="email" name="email"
+                                placeholder="example@mail.com"
+                                maxlength="100"
+                                required>
+                            <span class="field-error" id="err-email"></span>
                         </div>
                         <div class="input-group">
                             <label for="phone"><i class="fas fa-phone-alt"></i> Телефон</label>
-                            <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67" required>
+                            <input type="tel" id="phone" name="phone"
+                                placeholder="+79001234567"
+                                maxlength="12"
+                                required>
+                            <span class="field-error" id="err-phone"></span>
                         </div>
                         <div class="input-group">
                             <label for="birth_date"><i class="fas fa-calendar-alt"></i> Дата рождения</label>
                             <input type="date" id="birth_date" name="birth_date" required>
+                            <span class="field-error" id="err-birth_date"></span>
                         </div>
                         <div class="input-group">
                             <label for="adress"><i class="fas fa-hospital"></i> Адрес рабочей поликлиники (не обязательно)</label>
-                            <input type="text" id="adress" name="adress" placeholder="г. Москва, ул. Примерная, д. 1">
+                            <select id="adress" name="adress">
+                                <option value="">— Не выбрано —</option>
+                                <option>г. Москва, ул. Бауманская, д. 15</option>
+                                <option>г. Москва, ул. Арбат, д. 10</option>
+                                <option>г. Москва, Ленинский пр-т, д. 8</option>
+                                <option>г. Москва, ул. Тверская, д. 22</option>
+                                <option>г. Москва, ул. Профсоюзная, д. 45</option>
+                                <option>г. Москва, Варшавское ш., д. 3</option>
+                                <option>г. Москва, ул. Щепкина, д. 61/2</option>
+                                <option>г. Москва, Каширское ш., д. 24</option>
+                                <option>г. Санкт-Петербург, ул. Садовая, д. 32</option>
+                                <option>г. Санкт-Петербург, Невский пр-т, д. 55</option>
+                                <option>г. Екатеринбург, ул. Малышева, д. 17</option>
+                                <option>г. Новосибирск, ул. Красный пр-т, д. 52</option>
+                            </select>
                         </div>
                     </div>
 
                     <div class="form-column">
                         <div class="input-group">
                             <label for="login"><i class="fas fa-user-circle"></i> Логин</label>
-                            <input type="text" id="login" name="login" placeholder="Придумайте логин" required>
+                            <input type="text" id="login" name="login"
+                                placeholder="Придумайте логин"
+                                maxlength="50"
+                                required>
+                            <span class="field-error" id="err-login"></span>
                         </div>
                         <div class="input-group">
                             <label for="password"><i class="fas fa-lock"></i> Придумайте пароль</label>
-                            <input type="password" id="password" name="password" placeholder="Минимум 6 символов" required>
+                            <input type="password" id="password" name="password"
+                                placeholder="Минимум 6 символов"
+                                required>
+                            <span class="field-error" id="err-password"></span>
                         </div>
                         <div class="input-group">
                             <label for="confirm_password"><i class="fas fa-check-circle"></i> Подтвердите пароль</label>
-                            <input type="password" id="confirm_password" name="confirm_password" placeholder="Введите пароль ещё раз" required>
+                            <input type="password" id="confirm_password" name="confirm_password"
+                                placeholder="Введите пароль ещё раз"
+                                required>
+                            <span class="field-error" id="err-confirm_password"></span>
                         </div>
                         <div class="input-group">
                             <label for="polis"><i class="fas fa-id-card"></i> Полис ОМС</label>
-                            <input type="text" id="polis" name="polis" placeholder="ХХХХ-ХХХХ-ХХХХ-ХХХХ" required>
+                            <input type="text" id="polis" name="polis"
+                                placeholder="0000-0000-0000-0000"
+                                maxlength="19"
+                                required>
+                            <span class="field-error" id="err-polis"></span>
                         </div>
                         <div class="input-group">
                             <label for="ser_num_pas"><i class="fas fa-passport"></i> Серия и номер паспорта</label>
-                            <input type="text" id="ser_num_pas" name="ser_num_pas" placeholder="1234 567890" required>
+                            <input type="text" id="ser_num_pas" name="ser_num_pas"
+                                placeholder="1234 567890"
+                                maxlength="11"
+                                required>
+                            <span class="field-error" id="err-ser_num_pas"></span>
                         </div>
                     </div>
                 </div>
@@ -95,32 +172,157 @@
 
     <script>
         const form = document.getElementById('registerForm');
-        const password = document.getElementById('password');
-        const confirmPassword = document.getElementById('confirm_password');
 
-        form.addEventListener('submit', async function(e) {
+        const RULES = {
+            email:       { re: /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/, msg: 'Введите корректный email (example@mail.com)' },
+            phone:       { re: /^\+7[0-9]{10}$/, msg: 'Формат: +79001234567' },
+            login:       { re: /^[A-Za-z0-9_\-]{3,50}$/, msg: 'Только латиница, цифры, _ и - (мин. 3 символа)' },
+            polis:       { re: /^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/, msg: 'Формат: 0000-0000-0000-0000' },
+            ser_num_pas: { re: /^[0-9]{4}\s[0-9]{6}$/, msg: 'Формат: 1234 567890' }
+        };
+
+        function showError(id, msg) {
+            const errEl = document.getElementById('err-' + id);
+            const input = document.getElementById(id);
+            if (errEl) errEl.textContent = msg;
+            if (input) input.classList.toggle('input-invalid', !!msg);
+        }
+
+        function clearError(id) { showError(id, ''); }
+
+        function detectAlphabet(str) {
+            const hasCyr = /[А-ЯЁа-яё]/.test(str);
+            const hasLat = /[A-Za-z]/.test(str);
+            if (hasCyr && hasLat) return 'mixed';
+            if (hasCyr) return 'cyr';
+            if (hasLat) return 'lat';
+            return 'none';
+        }
+
+        function validateField(id) {
+            const input = document.getElementById(id);
+            if (!input) return true;
+            const val = input.value;
+
+            if (id === 'fullname') {
+                if (!val.trim()) { showError(id, 'Поле обязательно для заполнения'); return false; }
+                if (/[0-9]/.test(val)) { showError(id, 'Цифры недопустимы'); return false; }
+                if (detectAlphabet(val) === 'mixed') { showError(id, 'Нельзя смешивать русские и латинские буквы'); return false; }
+                if (val.trim().length < 2) { showError(id, 'Минимум 2 символа'); return false; }
+                clearError(id); return true;
+            }
+
+            if (id === 'birth_date') {
+                if (!val) { showError(id, 'Укажите дату рождения'); return false; }
+                const today = new Date(); today.setHours(0, 0, 0, 0);
+                const chosen = new Date(val);
+                if (chosen >= today) { showError(id, 'Дата рождения не может быть сегодняшней или будущей'); return false; }
+                if (chosen < new Date('1900-01-01')) { showError(id, 'Введите корректную дату рождения'); return false; }
+                clearError(id); return true;
+            }
+
+            if (id === 'password') {
+                if (val.length < 6) { showError(id, 'Минимум 6 символов'); return false; }
+                clearError(id); return true;
+            }
+
+            if (id === 'confirm_password') {
+                if (val !== document.getElementById('password').value) { showError(id, 'Пароли не совпадают'); return false; }
+                clearError(id); return true;
+            }
+
+            if (input.required && !val.trim()) { showError(id, 'Поле обязательно для заполнения'); return false; }
+            if (RULES[id] && !RULES[id].re.test(val)) { showError(id, RULES[id].msg); return false; }
+            clearError(id); return true;
+        }
+
+        function validateAll() {
+            return ['fullname', 'email', 'phone', 'birth_date', 'login', 'password', 'confirm_password', 'polis', 'ser_num_pas']
+                .map(id => validateField(id))
+                .every(Boolean);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Полное имя — блокируем смешение алфавитов
+            document.getElementById('fullname').addEventListener('input', function () {
+                this.value = this.value.replace(/[^А-ЯЁа-яёA-Za-z\s\-]/g, '');
+                if (detectAlphabet(this.value) === 'mixed') {
+                    const lastIsCyr = /[А-ЯЁа-яё]/.test(this.value.slice(-1));
+                    this.value = lastIsCyr
+                        ? this.value.replace(/[A-Za-z]/g, '')
+                        : this.value.replace(/[А-ЯЁа-яё]/g, '');
+                }
+            });
+            document.getElementById('fullname').addEventListener('blur', () => validateField('fullname'));
+
+            // Email
+            document.getElementById('email').addEventListener('blur', () => validateField('email'));
+
+            // Телефон
+            document.getElementById('phone').addEventListener('input', function () {
+                let val = this.value.replace(/[^+0-9]/g, '').replace(/(?!^)\+/g, '');
+                if (val.length > 0 && val[0] !== '+') val = '+' + val;
+                this.value = val.slice(0, 12);
+            });
+            document.getElementById('phone').addEventListener('blur', () => validateField('phone'));
+
+            // Дата рождения
+            (function () {
+                const input = document.getElementById('birth_date');
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                input.setAttribute('max', yesterday.toISOString().split('T')[0]);
+                input.setAttribute('min', '1900-01-01');
+            })();
+            document.getElementById('birth_date').addEventListener('change', () => validateField('birth_date'));
+
+            // Логин
+            document.getElementById('login').addEventListener('input', function () {
+                this.value = this.value.replace(/[^A-Za-z0-9_\-]/g, '');
+            });
+            document.getElementById('login').addEventListener('blur', () => validateField('login'));
+
+            // Пароль
+            document.getElementById('password').addEventListener('blur', () => validateField('password'));
+            document.getElementById('confirm_password').addEventListener('blur', () => validateField('confirm_password'));
+
+            // Полис — автодефисы
+            document.getElementById('polis').addEventListener('input', function () {
+                const digits = this.value.replace(/[^0-9]/g, '').slice(0, 16);
+                this.value = digits.match(/.{1,4}/g)?.join('-') || digits;
+            });
+            document.getElementById('polis').addEventListener('blur', () => validateField('polis'));
+
+            // Паспорт — формат 1234 567890
+            document.getElementById('ser_num_pas').addEventListener('input', function () {
+                let digits = this.value.replace(/[^0-9]/g, '').slice(0, 10);
+                if (digits.length > 4) digits = digits.slice(0, 4) + ' ' + digits.slice(4);
+                this.value = digits;
+            });
+            document.getElementById('ser_num_pas').addEventListener('blur', () => validateField('ser_num_pas'));
+        });
+
+        form.addEventListener('submit', async function (e) {
             e.preventDefault();
-
-            if (password.value !== confirmPassword.value) {
-                alert('Пароли не совпадают!');
+            if (!validateAll()) return;
+            if (!document.getElementById('terms').checked) {
+                alert('Необходимо согласиться с условиями использования');
                 return;
             }
 
-            if (password.value.length < 6) {
-                alert('Пароль должен содержать минимум 6 символов!');
-                return;
-            }
+            const adressVal = document.getElementById('adress').value;
 
             const userData = {
-                fullname: document.getElementById('fullname').value,
-                email: document.getElementById('email').value,
-                phone: document.getElementById('phone').value,
+                fullname:  document.getElementById('fullname').value.trim(),
+                email:     document.getElementById('email').value.trim(),
+                phone:     document.getElementById('phone').value.trim(),
                 birthDate: document.getElementById('birth_date').value,
-                clinic: document.getElementById('adress').value || null,
-                login: document.getElementById('login').value,
-                password: password.value,
-                polis: document.getElementById('polis').value,
-                passport: document.getElementById('ser_num_pas').value
+                clinic:    adressVal || null,
+                login:     document.getElementById('login').value.trim(),
+                password:  document.getElementById('password').value,
+                polis:     document.getElementById('polis').value.trim(),
+                passport:  document.getElementById('ser_num_pas').value.trim()
             };
 
             try {
@@ -133,7 +335,13 @@
                 const data = await res.json();
 
                 if (!res.ok) {
-                    alert(data.error || 'Ошибка регистрации');
+                    const errMsg = (data.error || '').toLowerCase();
+                    let handled = false;
+                    if (errMsg.includes('email')) { showError('email', 'Этот email уже зарегистрирован'); handled = true; }
+                    if (errMsg.includes('phone') || errMsg.includes('телефон')) { showError('phone', 'Этот телефон уже зарегистрирован'); handled = true; }
+                    if (errMsg.includes('polis') || errMsg.includes('полис')) { showError('polis', 'Этот полис уже зарегистрирован'); handled = true; }
+                    if (errMsg.includes('login') || errMsg.includes('логин')) { showError('login', 'Этот логин уже занят'); handled = true; }
+                    if (!handled) alert(data.error || 'Ошибка регистрации');
                     return;
                 }
 

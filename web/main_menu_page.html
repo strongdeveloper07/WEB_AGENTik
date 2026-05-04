@@ -8,105 +8,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         .uploads-section {
-            background: #f8f9fa;
-            border-radius: 15px;
-            padding: 20px 25px;
-            margin-bottom: 25px;
-            border: 1px solid #e1e1e1;
+            background: #f8f9fa; border-radius: 15px; padding: 20px 25px;
+            margin-bottom: 25px; border: 1px solid #e1e1e1;
         }
-        .uploads-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
+        .uploads-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
         .uploads-section-header h2 { font-size: 17px; font-weight: 600; color: #333; }
         .uploads-section-header h2 i { color: #667eea; margin-right: 8px; }
-        .uploads-badge {
-            background: #ff6b6b;
-            color: white;
-            font-size: 12px;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 20px;
-            margin-left: 8px;
-        }
+        .uploads-badge { background: #ff6b6b; color: white; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px; margin-left: 8px; }
         .uploads-badge.zero { background: #2ecc71; }
         .uploads-mini-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .uploads-mini-table th {
-            padding: 10px 12px;
-            text-align: left;
-            font-weight: 600;
-            color: #666;
-            border-bottom: 2px solid #e1e1e1;
-            background: white;
-        }
-        .uploads-mini-table td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #f0f0f0;
-            vertical-align: middle;
-            background: white;
-        }
+        .uploads-mini-table th { padding: 10px 12px; text-align: left; font-weight: 600; color: #666; border-bottom: 2px solid #e1e1e1; background: white; }
+        .uploads-mini-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; background: white; }
         .uploads-mini-table tr:last-child td { border-bottom: none; }
         .uploads-mini-table tr:hover td { background: #f5f5ff; }
         .file-name-cell { display: flex; align-items: center; gap: 8px; }
         .file-name-cell i { color: #667eea; }
-        .agent-chip {
-            background: #efefff;
-            color: #667eea;
-            padding: 3px 9px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 500;
-        }
-        .btn-attach-file {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 6px 13px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.25s;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
+        .agent-chip { background: #efefff; color: #667eea; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+        .btn-attach-file { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 6px 13px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.25s; display: inline-flex; align-items: center; gap: 5px; }
         .btn-attach-file:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(102,126,234,0.4); }
-        .uploads-empty {
-            text-align: center;
-            padding: 18px;
-            color: #2ecc71;
-            font-weight: 500;
-            font-size: 14px;
-            background: white;
-            border-radius: 10px;
-        }
+        .uploads-empty { text-align: center; padding: 18px; color: #2ecc71; font-weight: 500; font-size: 14px; background: white; border-radius: 10px; }
         .uploads-empty i { margin-right: 6px; }
         #attachFileModal .modal-content { max-width: 440px; }
-        .attach-file-info {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 12px 15px;
-            margin-bottom: 18px;
-            font-size: 13px;
-            color: #555;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .attach-file-info { background: #f8f9fa; border-radius: 10px; padding: 12px 15px; margin-bottom: 18px; font-size: 13px; color: #555; display: flex; align-items: center; gap: 10px; }
         .attach-file-info i { color: #667eea; font-size: 16px; }
-        .toast-msg {
-            position: fixed; bottom: 28px; right: 28px;
-            padding: 13px 22px; border-radius: 12px;
-            font-size: 14px; font-weight: 500; color: white;
-            opacity: 0; transform: translateY(15px);
-            transition: all 0.3s ease; z-index: 9999; pointer-events: none;
-        }
+        .toast-msg { position: fixed; bottom: 28px; right: 28px; padding: 13px 22px; border-radius: 12px; font-size: 14px; font-weight: 500; color: white; opacity: 0; transform: translateY(15px); transition: all 0.3s ease; z-index: 9999; pointer-events: none; }
         .toast-msg.show { opacity: 1; transform: translateY(0); }
         .toast-msg.success { background: #2ecc71; }
         .toast-msg.error { background: #e74c3c; }
+        .field-error { display: block; color: #e53e3e; font-size: 12px; margin-top: 4px; min-height: 16px; }
+        input.input-invalid, select.input-invalid { border-color: #e53e3e !important; }
+        select.modal-select { width: 100%; padding: 12px 15px; border: 2px solid #e1e1e1; border-radius: 12px; font-size: 15px; outline: none; font-family: inherit; background: white; color: #333; cursor: pointer; transition: border-color 0.2s; }
+        select.modal-select:focus { border-color: #667eea; }
     </style>
 </head>
 <body>
@@ -118,53 +50,24 @@
                     <p>Панель управления врача</p>
                 </div>
                 <div class="header-right">
-                    <div class="doctor-info">
-                        <i class="fas fa-user-md"></i>
-                        <span>Загрузка...</span>
-                    </div>
-                    <a href="#" class="btn-logout" id="logoutBtn">
-                        <i class="fas fa-sign-out-alt"></i> Выйти
-                    </a>
+                    <div class="doctor-info"><i class="fas fa-user-md"></i><span>Загрузка...</span></div>
+                    <a href="#" class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Выйти</a>
                 </div>
             </div>
 
             <div class="stats-grid">
-                <div class="stat-card">
-                    <i class="fas fa-users"></i>
-                    <div class="stat-info">
-                        <h3>Всего пациентов</h3>
-                        <p class="stat-number" id="totalPatients">0</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-user-plus"></i>
-                    <div class="stat-info">
-                        <h3>Добавлено сегодня</h3>
-                        <p class="stat-number" id="todayPatients">0</p>
-                    </div>
-                </div>
-                <div class="stat-card">
-                    <i class="fas fa-calendar-check"></i>
-                    <div class="stat-info">
-                        <h3>Активных записей</h3>
-                        <p class="stat-number" id="activeAppointments">0</p>
-                    </div>
-                </div>
+                <div class="stat-card"><i class="fas fa-users"></i><div class="stat-info"><h3>Всего пациентов</h3><p class="stat-number" id="totalPatients">0</p></div></div>
+                <div class="stat-card"><i class="fas fa-user-plus"></i><div class="stat-info"><h3>Добавлено сегодня</h3><p class="stat-number" id="todayPatients">0</p></div></div>
+                <div class="stat-card"><i class="fas fa-calendar-check"></i><div class="stat-info"><h3>Активных записей</h3><p class="stat-number" id="activeAppointments">0</p></div></div>
             </div>
 
-            <!-- СЕКЦИЯ ФАЙЛОВ АГЕНТОВ -->
             <div class="uploads-section">
                 <div class="uploads-section-header">
-                    <h2>
-                        <i class="fas fa-folder-open"></i> Файлы агентов
-                        <span class="uploads-badge" id="unlinkedBadge">0</span>
-                    </h2>
+                    <h2><i class="fas fa-folder-open"></i> Файлы агентов <span class="uploads-badge" id="unlinkedBadge">0</span></h2>
                     <span style="font-size:12px;color:#999;">Не привязаны к пациенту</span>
                 </div>
                 <div id="uploadsContainer">
-                    <div style="text-align:center;padding:15px;color:#aaa;font-size:13px;">
-                        <i class="fas fa-spinner fa-spin"></i> Загрузка...
-                    </div>
+                    <div style="text-align:center;padding:15px;color:#aaa;font-size:13px;"><i class="fas fa-spinner fa-spin"></i> Загрузка...</div>
                 </div>
             </div>
 
@@ -173,9 +76,7 @@
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" placeholder="Поиск по имени, телефону или полису..." onkeyup="searchPatients()">
                 </div>
-                <button class="btn-add" onclick="openAddModal()">
-                    <i class="fas fa-plus"></i> Добавить пациента
-                </button>
+                <button class="btn-add" onclick="openAddModal()"><i class="fas fa-plus"></i> Добавить пациента</button>
             </div>
 
             <div class="table-container">
@@ -202,25 +103,73 @@
                 <h2><i class="fas fa-user-plus"></i> Добавить нового пациента</h2>
                 <span class="close" onclick="closeAddModal()">&times;</span>
             </div>
-            <form id="addPatientForm">
-                <div class="input-group">
-                    <label><i class="fas fa-user"></i> Полное имя *</label>
-                    <input type="text" id="newFullname" required>
+            <form id="addPatientForm" novalidate>
+
+                <!-- Фамилия / Имя / Отчество -->
+                <div class="form-row">
+                    <div class="input-group">
+                        <label><i class="fas fa-user"></i> Фамилия *</label>
+                        <input type="text" id="newLastname" placeholder="Иванов" maxlength="50" required>
+                        <span class="field-error" id="err-newLastname"></span>
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-user"></i> Имя *</label>
+                        <input type="text" id="newFirstname" placeholder="Иван" maxlength="50" required>
+                        <span class="field-error" id="err-newFirstname"></span>
+                    </div>
                 </div>
                 <div class="form-row">
                     <div class="input-group">
+                        <label><i class="fas fa-user"></i> Отчество</label>
+                        <input type="text" id="newMiddlename" placeholder="Иванович (необязательно)" maxlength="50">
+                        <span class="field-error" id="err-newMiddlename"></span>
+                    </div>
+                    <div class="input-group">
+                        <label><i class="fas fa-venus-mars"></i> Пол *</label>
+                        <select id="newGender" class="modal-select" required>
+                            <option value="">— Выберите пол —</option>
+                            <option value="male">Мужской</option>
+                            <option value="female">Женский</option>
+                        </select>
+                        <span class="field-error" id="err-newGender"></span>
+                    </div>
+                </div>
+
+                <!-- Телефон / Полис -->
+                <div class="form-row">
+                    <div class="input-group">
                         <label><i class="fas fa-phone"></i> Телефон *</label>
-                        <input type="tel" id="newPhone" required>
+                        <input type="tel" id="newPhone" placeholder="+79001234567" maxlength="12" required>
+                        <span class="field-error" id="err-newPhone"></span>
                     </div>
                     <div class="input-group">
                         <label><i class="fas fa-id-card"></i> Полис *</label>
-                        <input type="text" id="newPolis" placeholder="ХХХХ-ХХХХ-ХХХХ-ХХХХ" required>
+                        <input type="text" id="newPolis" placeholder="0000-0000-0000-0000" maxlength="19" required>
+                        <span class="field-error" id="err-newPolis"></span>
                     </div>
                 </div>
+
+                <!-- Поликлиника -->
                 <div class="input-group">
                     <label><i class="fas fa-hospital"></i> Адрес поликлиники *</label>
-                    <input type="text" id="newClinic" placeholder="г. Москва, ул. Примерная, д. 1" required>
+                    <select id="newClinic" class="modal-select" required>
+                        <option value="">— Выберите поликлинику —</option>
+                        <option>г. Москва, ул. Бауманская, д. 15</option>
+                        <option>г. Москва, ул. Арбат, д. 10</option>
+                        <option>г. Москва, Ленинский пр-т, д. 8</option>
+                        <option>г. Москва, ул. Тверская, д. 22</option>
+                        <option>г. Москва, ул. Профсоюзная, д. 45</option>
+                        <option>г. Москва, Варшавское ш., д. 3</option>
+                        <option>г. Москва, ул. Щепкина, д. 61/2</option>
+                        <option>г. Москва, Каширское ш., д. 24</option>
+                        <option>г. Санкт-Петербург, ул. Садовая, д. 32</option>
+                        <option>г. Санкт-Петербург, Невский пр-т, д. 55</option>
+                        <option>г. Екатеринбург, ул. Малышева, д. 17</option>
+                        <option>г. Новосибирск, ул. Красный пр-т, д. 52</option>
+                    </select>
+                    <span class="field-error" id="err-newClinic"></span>
                 </div>
+
                 <div class="form-buttons">
                     <button type="button" class="btn-cancel" onclick="closeAddModal()">Отмена</button>
                     <button type="submit" class="btn-submit">Добавить пациента</button>
@@ -236,22 +185,17 @@
                 <h2><i class="fas fa-link"></i> Привязать к пациенту</h2>
                 <span class="close" onclick="closeAttachModal()">&times;</span>
             </div>
-            <div style="padding: 25px;">
-                <div class="attach-file-info">
-                    <i class="fas fa-file-medical"></i>
-                    <span id="attachFileName">—</span>
-                </div>
+            <div style="padding:25px;">
+                <div class="attach-file-info"><i class="fas fa-file-medical"></i><span id="attachFileName">—</span></div>
                 <div class="input-group">
                     <label><i class="fas fa-user" style="color:#667eea;margin-right:6px;"></i> Выберите пациента</label>
-                    <select id="attachPatientSelect" style="width:100%;padding:12px 15px;border:2px solid #e1e1e1;border-radius:12px;font-size:15px;outline:none;font-family:inherit;background:white;">
+                    <select id="attachPatientSelect" class="modal-select">
                         <option value="">— Выберите пациента —</option>
                     </select>
                 </div>
                 <div class="form-buttons" style="margin-top:20px;">
                     <button type="button" class="btn-cancel" onclick="closeAttachModal()">Отмена</button>
-                    <button type="button" class="btn-submit" onclick="confirmAttachFile()">
-                        <i class="fas fa-link"></i> Привязать
-                    </button>
+                    <button type="button" class="btn-submit" onclick="confirmAttachFile()"><i class="fas fa-link"></i> Привязать</button>
                 </div>
             </div>
         </div>
@@ -260,6 +204,21 @@
     <div class="toast-msg" id="toastMsg"></div>
 
     <script>
+        const CLINICS = [
+            'г. Москва, ул. Бауманская, д. 15',
+            'г. Москва, ул. Арбат, д. 10',
+            'г. Москва, Ленинский пр-т, д. 8',
+            'г. Москва, ул. Тверская, д. 22',
+            'г. Москва, ул. Профсоюзная, д. 45',
+            'г. Москва, Варшавское ш., д. 3',
+            'г. Москва, ул. Щепкина, д. 61/2',
+            'г. Москва, Каширское ш., д. 24',
+            'г. Санкт-Петербург, ул. Садовая, д. 32',
+            'г. Санкт-Петербург, Невский пр-т, д. 55',
+            'г. Екатеринбург, ул. Малышева, д. 17',
+            'г. Новосибирск, ул. Красный пр-т, д. 52'
+        ];
+
         let patients = [];
         let uploads = [];
         let currentAttachId = null;
@@ -282,6 +241,147 @@
             return true;
         }
 
+        /* ===================== ВАЛИДАЦИЯ ИМЁН ===================== */
+        function detectAlphabet(str) {
+            const hasCyr = /[А-ЯЁа-яё]/.test(str);
+            const hasLat = /[A-Za-z]/.test(str);
+            if (hasCyr && hasLat) return 'mixed';
+            if (hasCyr) return 'cyr';
+            if (hasLat) return 'lat';
+            return 'none';
+        }
+
+        function filterNameInput(val) {
+            // Убираем цифры и спецсимволы (оставляем буквы и дефис)
+            return val.replace(/[^А-ЯЁа-яёA-Za-z\-]/g, '');
+        }
+
+        function validateNameField(id, required = true) {
+            const input = document.getElementById(id);
+            const errEl = document.getElementById('err-' + id);
+            const val = input.value.trim();
+
+            if (!val) {
+                if (required) {
+                    errEl.textContent = 'Поле обязательно для заполнения';
+                    input.classList.add('input-invalid');
+                    return false;
+                }
+                errEl.textContent = '';
+                input.classList.remove('input-invalid');
+                return true;
+            }
+
+            if (/[0-9]/.test(val)) {
+                errEl.textContent = 'Цифры недопустимы';
+                input.classList.add('input-invalid');
+                return false;
+            }
+
+            if (detectAlphabet(val) === 'mixed') {
+                errEl.textContent = 'Нельзя смешивать русские и латинские буквы';
+                input.classList.add('input-invalid');
+                return false;
+            }
+
+            if (val.length < 2) {
+                errEl.textContent = 'Минимум 2 символа';
+                input.classList.add('input-invalid');
+                return false;
+            }
+
+            errEl.textContent = '';
+            input.classList.remove('input-invalid');
+            return true;
+        }
+
+        function showModalError(id, msg) {
+            const errEl = document.getElementById('err-' + id);
+            const input = document.getElementById(id);
+            if (errEl) errEl.textContent = msg;
+            if (input) input.classList.toggle('input-invalid', !!msg);
+        }
+
+        function clearModalError(id) { showModalError(id, ''); }
+
+        function validateModal() {
+            let valid = true;
+            if (!validateNameField('newLastname', true))   valid = false;
+            if (!validateNameField('newFirstname', true))  valid = false;
+            if (!validateNameField('newMiddlename', false)) valid = false;
+
+            const gender = document.getElementById('newGender').value;
+            if (!gender) {
+                showModalError('newGender', 'Выберите пол');
+                valid = false;
+            } else { clearModalError('newGender'); }
+
+            const phone = document.getElementById('newPhone').value;
+            if (!phone.trim()) {
+                showModalError('newPhone', 'Поле обязательно для заполнения'); valid = false;
+            } else if (!/^\+7[0-9]{10}$/.test(phone)) {
+                showModalError('newPhone', 'Формат: +79001234567'); valid = false;
+            } else { clearModalError('newPhone'); }
+
+            const polis = document.getElementById('newPolis').value;
+            if (!polis.trim()) {
+                showModalError('newPolis', 'Поле обязательно для заполнения'); valid = false;
+            } else if (!/^[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{4}$/.test(polis)) {
+                showModalError('newPolis', 'Формат: 0000-0000-0000-0000'); valid = false;
+            } else { clearModalError('newPolis'); }
+
+            const clinic = document.getElementById('newClinic').value;
+            if (!clinic) {
+                showModalError('newClinic', 'Выберите поликлинику из списка'); valid = false;
+            } else { clearModalError('newClinic'); }
+
+            return valid;
+        }
+
+        /* ===================== LIVE-ФИЛЬТРЫ ===================== */
+        document.addEventListener('DOMContentLoaded', function () {
+            ['newLastname', 'newFirstname', 'newMiddlename'].forEach(id => {
+                document.getElementById(id).addEventListener('input', function () {
+                    this.value = filterNameInput(this.value);
+                    // Проверяем смешение алфавитов на лету
+                    if (detectAlphabet(this.value) === 'mixed') {
+                        // Оставляем только последний введённый алфавит
+                        const hasCyr = /[А-ЯЁа-яё]/.test(this.value.slice(-1));
+                        if (hasCyr) {
+                            this.value = this.value.replace(/[A-Za-z]/g, '');
+                        } else {
+                            this.value = this.value.replace(/[А-ЯЁа-яё]/g, '');
+                        }
+                    }
+                });
+                document.getElementById(id).addEventListener('blur', () =>
+                    validateNameField(id, id !== 'newMiddlename'));
+            });
+
+            document.getElementById('newGender').addEventListener('change', function () {
+                if (this.value) clearModalError('newGender');
+            });
+
+            document.getElementById('newPhone').addEventListener('input', function () {
+                let val = this.value.replace(/[^+0-9]/g, '');
+                val = val.replace(/(?!^)\+/g, '');
+                if (val.length > 0 && val[0] !== '+') val = '+' + val;
+                this.value = val.slice(0, 12);
+                if (this.value) clearModalError('newPhone');
+            });
+
+            document.getElementById('newPolis').addEventListener('input', function () {
+                const digits = this.value.replace(/[^0-9]/g, '').slice(0, 16);
+                this.value = digits.match(/.{1,4}/g)?.join('-') || digits;
+                if (this.value) clearModalError('newPolis');
+            });
+
+            document.getElementById('newClinic').addEventListener('change', function () {
+                if (this.value) clearModalError('newClinic');
+            });
+        });
+
+        /* ===================== ЗАГРУЗКА ДАННЫХ ===================== */
         async function loadPatients() {
             try {
                 const res = await fetch('/api/v1/patients', {
@@ -313,23 +413,19 @@
             const badge = document.getElementById('unlinkedBadge');
             badge.textContent = uploads.length;
             badge.className = 'uploads-badge' + (uploads.length === 0 ? ' zero' : '');
-
             if (uploads.length === 0) {
                 container.innerHTML = '<div class="uploads-empty"><i class="fas fa-check-circle"></i> Все файлы привязаны к пациентам</div>';
                 return;
             }
-
             container.innerHTML = `
                 <div style="overflow-x:auto;border-radius:10px;border:1px solid #e1e1e1;">
                     <table class="uploads-mini-table">
-                        <thead>
-                            <tr>
-                                <th><i class="fas fa-file" style="color:#667eea;margin-right:5px;"></i>Файл</th>
-                                <th><i class="fas fa-robot" style="color:#667eea;margin-right:5px;"></i>Агент</th>
-                                <th><i class="fas fa-clock" style="color:#667eea;margin-right:5px;"></i>Загружен</th>
-                                <th></th>
-                            </tr>
-                        </thead>
+                        <thead><tr>
+                            <th><i class="fas fa-file" style="color:#667eea;margin-right:5px;"></i>Файл</th>
+                            <th><i class="fas fa-robot" style="color:#667eea;margin-right:5px;"></i>Агент</th>
+                            <th><i class="fas fa-clock" style="color:#667eea;margin-right:5px;"></i>Загружен</th>
+                            <th></th>
+                        </tr></thead>
                         <tbody>
                             ${uploads.map(u => `
                                 <tr>
@@ -366,9 +462,7 @@
             document.getElementById('attachFileModal').style.display = 'flex';
         }
 
-        function closeAttachModal() {
-            document.getElementById('attachFileModal').style.display = 'none';
-        }
+        function closeAttachModal() { document.getElementById('attachFileModal').style.display = 'none'; }
 
         async function confirmAttachFile() {
             const patientId = document.getElementById('attachPatientSelect').value;
@@ -423,17 +517,36 @@
 
         function searchPatients() { renderTable(); }
         function viewDossier(id) { window.location.href = `patient_page.html?id=${id}`; }
-        function openAddModal() { document.getElementById('addModal').style.display = 'flex'; document.getElementById('addPatientForm').reset(); }
+
+        function openAddModal() {
+            document.getElementById('addModal').style.display = 'flex';
+            document.getElementById('addPatientForm').reset();
+            ['newLastname','newFirstname','newMiddlename','newGender','newPhone','newPolis','newClinic']
+                .forEach(id => clearModalError(id));
+        }
+
         function closeAddModal() { document.getElementById('addModal').style.display = 'none'; }
 
-        document.getElementById('addPatientForm').addEventListener('submit', async function(e) {
+        document.getElementById('addPatientForm').addEventListener('submit', async function (e) {
             e.preventDefault();
+            if (!validateModal()) return;
+
+            const lastname   = document.getElementById('newLastname').value.trim();
+            const firstname  = document.getElementById('newFirstname').value.trim();
+            const middlename = document.getElementById('newMiddlename').value.trim();
+            const fullname   = lastname + ' ' + firstname + (middlename ? ' ' + middlename : '');
+
             const newPatient = {
-                fullname: document.getElementById('newFullname').value,
-                phone: document.getElementById('newPhone').value,
-                polis: document.getElementById('newPolis').value,
-                clinic: document.getElementById('newClinic').value
+                fullname,
+                lastname,
+                firstname,
+                middlename: middlename || null,
+                gender:  document.getElementById('newGender').value,
+                phone:   document.getElementById('newPhone').value.trim(),
+                polis:   document.getElementById('newPolis').value.trim(),
+                clinic:  document.getElementById('newClinic').value
             };
+
             try {
                 const res = await fetch('/api/v1/patients', {
                     method: 'POST',
@@ -441,7 +554,17 @@
                     body: JSON.stringify(newPatient)
                 });
                 const data = await res.json();
-                if (!res.ok) { alert(data.error || 'Ошибка добавления пациента'); return; }
+                if (!res.ok) {
+                    const err = (data.error || '').toLowerCase();
+                    if (err.includes('phone') || err.includes('телефон')) {
+                        showModalError('newPhone', 'Этот телефон уже зарегистрирован');
+                    } else if (err.includes('polis') || err.includes('полис')) {
+                        showModalError('newPolis', 'Этот полис уже зарегистрирован');
+                    } else {
+                        alert(data.error || 'Ошибка добавления пациента');
+                    }
+                    return;
+                }
                 patients.unshift(data.patient);
                 updateStats();
                 renderTable();
@@ -451,7 +574,7 @@
             } catch (err) { alert('Ошибка подключения к серверу'); }
         });
 
-        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+        document.getElementById('logoutBtn').addEventListener('click', function (e) {
             e.preventDefault();
             localStorage.removeItem('access_token');
             localStorage.removeItem('currentUser');
@@ -459,7 +582,7 @@
             window.location.href = 'entrance_page.html';
         });
 
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target === document.getElementById('addModal')) closeAddModal();
             if (event.target === document.getElementById('attachFileModal')) closeAttachModal();
         };

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const db = require('../db/database');
 const { authenticateToken, JWT_SECRET } = require('../middleware/auth');
 
+
 // регистрация врача
 router.post('/register', (req, res) => {
   const {
@@ -21,6 +22,31 @@ router.post('/register', (req, res) => {
 
   if (!fullname || !login || !password || !polis) {
     return res.status(400).json({ error: 'Укажите fullname, login, password, polis' });
+  }
+
+  // Явные проверки дублирования до INSERT
+  if (email) {
+    const existingEmail = db.prepare('SELECT id FROM users WHERE email = ?').get(email);
+    if (existingEmail) {
+      return res.status(409).json({ error: 'email already exists' });
+    }
+  }
+
+  if (phone) {
+    const existingPhone = db.prepare('SELECT id FROM users WHERE phone = ?').get(phone);
+    if (existingPhone) {
+      return res.status(409).json({ error: 'phone already exists' });
+    }
+  }
+
+  const existingLogin = db.prepare('SELECT id FROM users WHERE login = ?').get(login);
+  if (existingLogin) {
+    return res.status(409).json({ error: 'login already exists' });
+  }
+
+  const existingPolis = db.prepare('SELECT id FROM users WHERE polis = ?').get(polis);
+  if (existingPolis) {
+    return res.status(409).json({ error: 'polis already exists' });
   }
 
   const hashedPassword = bcrypt.hashSync(password, 10);
@@ -43,13 +69,10 @@ router.post('/register', (req, res) => {
 
     res.status(201).json({ status: 'ok', message: 'Пользователь создан' });
   } catch (err) {
-    if (err.message.includes('UNIQUE')) {
-      res.status(409).json({ error: 'Пользователь с таким логином или полисом уже существует' });
-    } else {
-      res.status(500).json({ error: err.message });
-    }
+    res.status(500).json({ error: err.message });
   }
 });
+
 
 // логин врача
 router.post('/login', (req, res) => {
@@ -71,7 +94,6 @@ router.post('/login', (req, res) => {
     return res.status(401).json({ error: 'Неверный номер полиса' });
   }
 
-  // В токен кладём id, login, fullname
   const token = jwt.sign(
     { id: user.id, login: user.login, fullname: user.fullname },
     JWT_SECRET,
@@ -90,6 +112,7 @@ router.post('/login', (req, res) => {
   });
 });
 
+
 // привязка устройства
 router.post('/bind-device', authenticateToken, (req, res) => {
   const { device_id } = req.body;
@@ -103,6 +126,7 @@ router.post('/bind-device', authenticateToken, (req, res) => {
   res.json({ status: 'ok', device_id });
 });
 
+
 // данные текущего пользователя
 router.get('/me', authenticateToken, (req, res) => {
   const user = db.prepare(
@@ -111,5 +135,6 @@ router.get('/me', authenticateToken, (req, res) => {
 
   res.json(user);
 });
+
 
 module.exports = router;
